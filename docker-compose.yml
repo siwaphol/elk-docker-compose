@@ -18,14 +18,14 @@ services:
     profiles:
       - setup
     build:
-      context: docker/elk/setup/
+      context: setup/
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION:-9.1.4}
     init: true
     volumes:
-      - ./docker/elk/setup/entrypoint.sh:/entrypoint.sh:ro,Z
-      - ./docker/elk/setup/lib.sh:/lib.sh:ro,Z
-      - ./docker/elk/setup/roles:/roles:ro,Z
+      - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
+      - ./setup/lib.sh:/lib.sh:ro,Z
+      - ./setup/roles:/roles:ro,Z
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-1qazXSW@!@#$}
       LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-1qazXSW@!@#$}
@@ -50,7 +50,7 @@ services:
     profiles:
       - setup
     build:
-      context: docker/elk/kibana/
+      context: kibana/
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION:-9.1.4}
     command:
@@ -60,11 +60,11 @@ services:
 
   elasticsearch:
     build:
-      context: docker/elk/elasticsearch/
+      context: elasticsearch/
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION:-9.1.4}
     volumes:
-      - ./docker/elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
       - elasticsearch:/usr/share/elasticsearch/data:Z
     ports:
       - 9200:9200
@@ -85,13 +85,13 @@ services:
 
   logstash:
     build:
-      context: docker/elk/logstash/
+      context: logstash/
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION:-9.1.4}
     volumes:
-      - ./docker/elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
-      - ./docker/elk/logstash/config/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro,Z
-      - ./docker/elk/logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
+      - ./logstash/config/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro,Z
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro,Z
     ports:
       - 5044:5044
       - 50000:50000/tcp
@@ -109,11 +109,11 @@ services:
 
   kibana:
     build:
-      context: docker/elk/kibana/
+      context: kibana/
       args:
         ELASTIC_VERSION: ${ELASTIC_VERSION:-9.1.4}
     volumes:
-      - ./docker/elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
     ports:
       - 5601:5601
     environment:
